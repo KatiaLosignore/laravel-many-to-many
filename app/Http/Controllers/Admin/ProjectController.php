@@ -22,7 +22,8 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return view('admin.projects.index', compact('projects'));
+        $technologies = Technology::all();
+        return view('admin.projects.index', compact('projects', 'technologies'));
     }
 
     /**
@@ -79,7 +80,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -93,8 +95,11 @@ class ProjectController extends Controller
     {
         $validated_data = $request->validated();
         $validated_data['slug'] = Project::generateSlug($request->title);
-        // dd($validated_data);
+
+        $project->technologies()->sync($request->technologies);
+        
         $project->update($validated_data);
+
         return redirect()->route('admin.projects.show', ['project' => $project->slug])->with('status', 'Progetto modificato con successo!');
     }
 
