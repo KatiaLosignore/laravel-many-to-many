@@ -26,7 +26,7 @@
                 <td>{{$project->type?->name}}</td>
                 <td>
                     @foreach ($project->technologies as $technology)
-                    <span class="badge rounded-pill text-bg-primary">{{$technology->name}}</span>
+                        <span class="badge rounded-pill text-bg-primary">{{$technology->name}}</span>
                     @endforeach
                 </td>
                 <td class="d-flex">

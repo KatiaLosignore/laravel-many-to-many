@@ -8,6 +8,12 @@
 
 <h3>Type: {{$project->type?$project->type->name:'No matched type'}}</h3>
 
+<div class="mb-3 mt-3">
+    @foreach ($project->technologies as $technology)
+        <span class="badge rounded-pill text-bg-primary">{{$technology->name}}</span>
+    @endforeach
+</div>
+
 @if ($project->image)
     <img class="img-thumbnail" src="{{$project->image}}" alt="{{$project->title}}"/>
 @endif

@@ -2,7 +2,7 @@
 
 @section('content')
 
-<h1 class="mt-3 mb-3">List of project types</h1>
+<h1 class="mt-3 mb-3">List of Project Types</h1>
 
 <table class="table">
     <thead>
