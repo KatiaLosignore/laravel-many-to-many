@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Technology;
 use Illuminate\Http\Request;
+use App\Models\Project;
+use App\Http\Requests\StoreTechnologytRequest;
+use App\Http\Requests\UpdateTechnologytRequest;
 
 class TechnologyController extends Controller
 {
@@ -15,8 +18,10 @@ class TechnologyController extends Controller
      */
     public function index()
     {
+        
+        $projects= Project::all();
         $technologies = Technology::all();
-        return view('admin.technologies.index', compact('technologies'));
+        return view('admin.technologies.index', compact('technologies', 'projects'));
     }
     
 
@@ -27,7 +32,9 @@ class TechnologyController extends Controller
      */
     public function create()
     {
-        //
+        $projects= Project::all();
+        $technologies = Technology::all();
+        return view('admin.technologies.create', compact('technologies', 'projects'));
     }
 
     /**
@@ -36,9 +43,20 @@ class TechnologyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTechnologytRequest $request)
     {
-        //
+        $form_data = $request->validated();
+
+        $form_data['slug'] = Technology::generateSlug($request->name);
+
+        $technology = Technology::create($form_data);
+
+        if ($request->has('projects')) {
+            $technology->projects()->attach($request->projects);
+        }
+       
+        return redirect()->route('admin.technologies.show', ['technology' => $technology->slug])->with('status', 'Tecnologia creata con successo!');
+
     }
 
     /**
@@ -60,7 +78,8 @@ class TechnologyController extends Controller
      */
     public function edit(Technology $technology)
     {
-        //
+        
+        return view('admin.technologies.edit', compact('technology'));
     }
 
     /**
@@ -70,9 +89,15 @@ class TechnologyController extends Controller
      * @param  \App\Models\Technology  $technology
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Technology $technology)
+    public function update(UpdateTechnologytRequest $request, Technology $technology)
     {
-        //
+        $validated_data = $request->validated();
+        $validated_data['slug'] = Technology::generateSlug($request->name);
+
+        $technology->update($validated_data);
+    
+
+        return redirect()->route('admin.technologies.show', ['technology' => $technology->slug])->with('status', 'Progetto modificato con successo!');
     }
 
     /**
@@ -83,6 +108,7 @@ class TechnologyController extends Controller
      */
     public function destroy(Technology $technology)
     {
-        //
+        $technology->delete();
+        return redirect()->route('admin.technologies.index');
     }
 }
