@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <form method="POST" action="{{ route('admin.projects.store') }}">
+    <form method="POST" action="{{ route('admin.projects.store') }}" enctype="multipart/form-data">
 
         @csrf
 
@@ -18,14 +18,16 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Image url</label>
-            <input type="text" class="form-control @error('image') is-invalid @enderror " id="image" name="image" value="{{old('image')}}">
+            <label for="image" class="form-label">Select image</label>
+
+            <input type="file" class="form-control @error('image') is-invalid @enderror " id="image" name="image">
             @error('image')
                 <div class="invalid-feedback">
                     {{$message}}
                 </div>
             @enderror
         </div>
+
 
         <div class="mb-3">
             <label for="type_id" class="form-label">Select Types</label>

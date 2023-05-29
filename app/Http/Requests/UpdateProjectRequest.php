@@ -28,10 +28,10 @@ class UpdateProjectRequest extends FormRequest
         return [
             'title' => ['required', 'max:150', Rule::unique('projects')->ignore($this->project)],
             'content' => 'nullable|string',
-            'image' => 'nullable|max:255|url',
             'link_project' => 'nullable|url',
             'type_id' => 'nullable|exists:types,id',
-            'technologies' => 'exists:technologies,id'
+            'technologies' => 'exists:technologies,id',
+            'image' => 'nullable|image|max:1024',
         ];
     }
 
@@ -43,7 +43,7 @@ class UpdateProjectRequest extends FormRequest
             'content.string' => "Il campo descrizione deve essere di tipo stringa",
             'image.max' => "L'url dell'immagine deve avere massimo 255 caratteri",
             'image.url' => "L'url dell'immagine deve essere valida, esempio: http://www.miosito.com",
-            'link_project.url' => "Il link del progetto deve essere valido",         
+            'link_project.url' => "Il link del progetto deve essere valido",
         ];
     }
 }

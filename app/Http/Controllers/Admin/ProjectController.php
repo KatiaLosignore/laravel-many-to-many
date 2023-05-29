@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\Type;
 use App\Models\Technology;
+use Illuminate\Support\Facades\Storage;
 
 
 use Illuminate\Http\Request;
@@ -50,13 +51,23 @@ class ProjectController extends Controller
 
         $form_data['slug'] = Project::generateSlug($request->title);
 
+        $checkProject = Project::where('slug', $form_data['slug'])->first();
+        if ($checkProject) {
+            return back()->withInput()->withErrors(['slug' => 'Impossibile creare lo slug per questo progetto, cambia il titolo']);
+        }
+
+
+        if ($request->hasFile('image')) {
+            $path = Storage::put('cover', $request->image);
+            $form_data['image'] = $path;
+        }
 
         $project = Project::create($form_data);
 
         if ($request->has('technologies')) {
             $project->technologies()->attach($request->technologies);
         }
-       
+
         return redirect()->route('admin.projects.show', ['project' => $project->slug])->with('status', 'Progetto creato con successo!');
     }
 
@@ -97,7 +108,7 @@ class ProjectController extends Controller
         $validated_data['slug'] = Project::generateSlug($request->title);
 
         $project->technologies()->sync($request->technologies);
-        
+
         $project->update($validated_data);
 
         return redirect()->route('admin.projects.show', ['project' => $project->slug])->with('status', 'Progetto modificato con successo!');
