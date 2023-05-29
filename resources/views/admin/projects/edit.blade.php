@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <form method="POST" action="{{ route('admin.projects.update' , ['project' => $project->slug]) }}">
+    <form method="POST" action="{{ route('admin.projects.update' , ['project' => $project->slug]) }}" enctype="multipart/form-data">
 
         @csrf
         @method('PUT')
@@ -19,14 +19,24 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Image url</label>
-            <input type="text" class="form-control @error('image') is-invalid @enderror " id="image" name="image" value="{{old('image', $project->image)}}">
+            <label for="image" class="form-label">Select image</label>
+
+            @if ($project->image)
+            <div class="my-img-wrapper">
+                <img class="img-thumbnail my-img-thumb" src="{{asset('storage/' . $project->image)}}" alt="{{$project->title}}"/>
+                <a href="{{route('admin.projects.deleteImage', ['slug' => $project->slug])}}" class="my-img-delete btn btn-danger">X</a>
+            </div>
+            @endif
+
+            <input type="file" class="form-control @error('image') is-invalid @enderror " id="image" name="image">
+
             @error('image')
                 <div class="invalid-feedback">
                     {{$message}}
                 </div>
             @enderror
         </div>
+
 
         <div class="mb-3">
             <label for="type_id" class="form-label">Select Types</label>

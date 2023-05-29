@@ -107,6 +107,23 @@ class ProjectController extends Controller
         $validated_data = $request->validated();
         $validated_data['slug'] = Project::generateSlug($request->title);
 
+        $checkProject = Project::where('slug', $validated_data['slug'])->where('id', '<>', $project->id)->first();
+
+        if ($checkProject) {
+            return back()->withInput()->withErrors(['slug' => 'Impossibile creare lo slug']);
+        }
+
+        if ($request->hasFile('image')) {
+
+            if($project->image) {
+                Storage::delete($project->image);
+            }
+
+            $path = Storage::put('cover', $request->image);
+            $validated_data['image'] = $path;
+        }
+
+
         $project->technologies()->sync($request->technologies);
 
         $project->update($validated_data);
@@ -122,7 +139,25 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if ($project->image) {
+            Storage::delete($project->image);
+        }
+
         $project->delete();
         return redirect()->route('admin.projects.index');
+    }
+
+    public function deleteImage($slug) {
+
+        $project = Project::where('slug', $slug)->firstOrFail();
+
+        if ($project->image) {
+            Storage::delete($project->image);
+            $project->image = null;
+            $project->save();
+        }
+
+        return redirect()->route('admin.projects.edit', $project->slug);
+
     }
 }
