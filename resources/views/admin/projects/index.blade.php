@@ -24,6 +24,8 @@
                 <td>
                     @if ($project->image)
                         <img class="img-thumbnail my-img-index" src="{{asset('storage/' . $project->image)}}" alt="{{$project->title}}"/>
+                    @else
+                        <img class="img-thumbnail" src="{{Vite::asset('resources/img/images.jpg')}}" alt= "Il codice"/>
                     @endif
                 </td>
                 <td>{{$project->title}}</td>

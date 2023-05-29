@@ -15,8 +15,11 @@
 </div>
 
 @if ($project->image)
-    <img class="img-thumbnail" src="{{$project->image}}" alt="{{$project->title}}"/>
+    <img class="img-thumbnail" src="{{asset('storage/' . $project->image)}}" alt="{{$project->title}}"/>
+@else
+    <img class="img-thumbnail" src="{{Vite::asset('resources/img/images.jpg')}}" alt= "Il codice"/>
 @endif
+
 
 <p class="mb-3 mt-3">{{$project->link_project}}</p>
 <p>{{$project->content}}</p>
